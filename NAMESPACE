@@ -1,0 +1,5 @@
+import(rARPACK)
+importFrom("grDevices", "dev.off", "pdf", "rgb")
+importFrom("graphics", "abline", "axis", "layout", "lines", "par", "plot", "points", "segments", "text", "title")
+importFrom("stats", "cov", "density", "kmeans", "optim", "pf", "sd")
+export("cluster_performance", "hp_plot", "mcdc", "mch", "mddc", "mdh", "ncutdc", "ncuth", "node_plot", "success_ratio", "tree_plot", "tree_prune", "tree_split")

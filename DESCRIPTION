@@ -1,0 +1,19 @@
+Package: PPCI
+Type: Package
+Title: Projection Pursuit for Cluster Identification
+Version: 0.1.0
+Author: David Hofmeyr <dhofmeyr@sun.ac.za> [aut, cre]
+	Nicos Pavlidis <n.pavlidis@lancaster.ac.uk> [aut]
+Maintainer: David Hofmeyr <dhofmeyr@sun.ac.za>
+Description: Implements recently developed projection 
+    pursuit algorithms for finding optimal linear cluster
+    separators. The clustering algorithms use optimal
+    hyperplane separators based on minimum density, Pavlidis et. al (2016) <https://jmlr.csail.mit.edu/papers/volume17/15-307/15-307.pdf>;
+    minimum normalised cut, Hofmeyr (2017) <doi:10.1109/TPAMI.2016.2609929>;
+    and maximum variance ratio clusterability, Hofmeyr and Pavlidis (2015) <doi:10.1109/SSCI.2015.116>.
+Depends: R (>= 2.10.0)
+License: GPL-3
+Encoding: UTF-8
+LazyData: yes
+Imports: rARPACK
+RoxygenNote: 6.0.1
