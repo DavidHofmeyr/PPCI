@@ -44,9 +44,9 @@
 # $args = list of (functional) arguments passed to ncutdc
 
 ncutdc <- function(X, K, split.index = NULL, v0 = NULL, s = NULL, minsize = NULL, verb = NULL, labels = NULL, maxit = NULL, ftol = NULL){
-  
+
   if(is.data.frame(X)) X <- as.matrix(X)
-  
+
   if(is.null(verb)) verb = 0
 
   # set parameters for clustering and optimisation
@@ -73,11 +73,11 @@ ncutdc <- function(X, K, split.index = NULL, v0 = NULL, s = NULL, minsize = NULL
 
   tree <- matrix(0, (2*K-1), 2)
   tree[1,] <- c(1, 1)
-  
+
   # Parent stores the parent node number of each node (The parent of the root node is 0)
-  
+
   Parent <- numeric(2*K-1)
-  
+
   # stores hyperplane separators for each node, v and b
 
   vs <- matrix(0, (2*K-1), d)
@@ -94,8 +94,6 @@ ncutdc <- function(X, K, split.index = NULL, v0 = NULL, s = NULL, minsize = NULL
   # find the first hyperplane. if multiple initialisations were used, select the one with the minimum ncut value
 
   c.split <- ncuth(X, v0, s, minsize, verb, labels, maxit, ftol)
-  ix.opt <- which.min(unlist(lapply(c.split, function(sol) sol$fval)))
-  c.split <- c.split[[ix.opt]]
 
   # store the results in the above discussed objects
 
@@ -127,8 +125,6 @@ ncutdc <- function(X, K, split.index = NULL, v0 = NULL, s = NULL, minsize = NULL
     ixs[[n.clust+2]] <- ixs[[id]][-pass[[id]]]
 
     c.split <- ncuth(X[ixs[[n.clust+1]],], v0, s, minsize, verb, labels[ixs[[n.clust+1]]], maxit, ftol)
-    ix.opt <- which.min(unlist(lapply(c.split, function(sol) sol$fval)))
-    c.split <- c.split[[ix.opt]]
 
     split_indices[n.clust+1] <- split.index(c.split$v, X[ixs[[n.clust+1]],], c.split$params)
 
@@ -143,12 +139,10 @@ ncutdc <- function(X, K, split.index = NULL, v0 = NULL, s = NULL, minsize = NULL
     ncuts[n.clust+1] <- c.split$fval
 
     pars[[n.clust+1]] <- c.split$params
-    
+
     Parent[n.clust+1] <- id
 
     c.split <- ncuth(X[ixs[[n.clust+2]],], v0, s, minsize, verb, labels[ixs[[n.clust+2]]], maxit, ftol)
-    ix.opt <- which.min(unlist(lapply(c.split, function(sol) sol$fval)))
-    c.split <- c.split[[ix.opt]]
 
     split_indices[n.clust+2] <- split.index(c.split$v, X[ixs[[n.clust+2]],], c.split$params)
 
@@ -163,7 +157,7 @@ ncutdc <- function(X, K, split.index = NULL, v0 = NULL, s = NULL, minsize = NULL
     ncuts[n.clust+2] <- c.split$fval
 
     pars[[n.clust+2]] <- c.split$params
-    
+
     Parent[n.clust+2] <- id
   }
 
@@ -185,7 +179,11 @@ ncutdc <- function(X, K, split.index = NULL, v0 = NULL, s = NULL, minsize = NULL
   Nodes <- list()
   for(i in 1:length(ixs)) Nodes[[i]] <- list(ixs = ixs[[i]], v = vs[i,], b = bs[i], params = pars[[i]], fval = ncuts[i], node = tree[i,], location = loci[i,])
 
-  list(cluster = asgn, model = tree, Parent = Parent, Nodes = Nodes, data = X, method = 'NCutH', args = list(v0 = v0, s = s, split.index = split.index, minsize = minsize, maxit = maxit, ftol = ftol))
+  output <- list(cluster = asgn, model = tree, Parent = Parent, Nodes = Nodes, data = X, method = 'NCutH', args = list(v0 = v0, s = s, split.index = split.index, minsize = minsize, maxit = maxit, ftol = ftol))
+
+  class(output) <- 'ppci_cluster_solution'
+
+  output
 }
 
 
@@ -223,7 +221,7 @@ ncutdc <- function(X, K, split.index = NULL, v0 = NULL, s = NULL, minsize = NULL
 ncuth <- function(X, v0 = NULL, s = NULL, minsize = NULL, verb = NULL, labels = NULL, maxit = NULL, ftol = NULL){
 
   if(is.data.frame(X)) X <- as.matrix(X)
-  
+
   params = list()
 
   if(is.null(minsize)) params$nmin <- 1
@@ -238,16 +236,16 @@ ncuth <- function(X, v0 = NULL, s = NULL, minsize = NULL, verb = NULL, labels = 
 
   if(n<(2*params$nmin)) return(list(list(cluster = numeric(n)+1, v = numeric(ncol(rbind(c(),X)))+1, b = 0, params = list(s = 100, nmin = params$nmin), fval = Inf, method = 'NCutH')))
 
-  
+
   # if labels are supplied, ensure they are integers 1:K (K the number of classes)
-  
+
   if(!is.null(labels)){
     lab_new <- numeric(length(labels))
     u <- unique(labels)
     for(i in 1:length(u)) lab_new[which(labels==u[i])] = i
     labels <- lab_new
   }
-  
+
   # set up parameters for optimisation
 
   if(is.null(verb)) verb = 0
@@ -274,7 +272,7 @@ ncuth <- function(X, v0 = NULL, s = NULL, minsize = NULL, verb = NULL, labels = 
 
   # store details of the hyperplanes arising from each initialisation
 
-  output <- list()
+  hyperplanes <- list()
 
   for(i in 1:ncol(E)){
     v <- ncutpp(E[,i], X, params, verb, labels, maxit, ftol)
@@ -285,9 +283,18 @@ ncuth <- function(X, v0 = NULL, s = NULL, minsize = NULL, verb = NULL, labels = 
 
     pass <- X%*%v<b
 
-    output[[i]] <- list(cluster = pass+1, v = v, b = b, params = params, fval = fval, method = 'NCutH')
+    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X-(X%*%v%*%t(v))[1]*v), 1)$vectors
+    else v2 <- eigen(cov(X-(X%*%v%*%t(v))[1]*v))$vectors[,1]
+    hyperplanes[[i]] <- list(cluster = pass+1, v = v, b = b, params = params, fval = fval, method = 'NCutH', data = X, fitted = X%*%cbind(v, v2))
 
+    class(hyperplanes[[i]]) <- 'ppci_hyperplane_solution'
   }
+
+  best_sol <- which.min(unlist(lapply(hyperplanes, function(l) l$fval)))
+
+  output <- hyperplanes[[best_sol]]
+
+  output$alternatives <- hyperplanes[-best_sol]
 
   output
 

@@ -45,7 +45,7 @@
 mcdc <- function(X, K, v0 = NULL, split.index = NULL, minsize = NULL, verb = NULL, labels = NULL, maxit = NULL, ftol = NULL){
 
   if(is.data.frame(X)) X <- as.matrix(X)
-  
+
   if(is.null(verb)) verb = 0
 
   # set parameters for clustering and optimisation
@@ -104,8 +104,6 @@ mcdc <- function(X, K, v0 = NULL, split.index = NULL, minsize = NULL, verb = NUL
   # determine the optimal hyperplane(s) at the root node and select that with the maximum variance ratio
 
   c.split <- mch(X, v0, minsize, verb, labels, maxit, ftol)
-  ix.opt <- which.max(unlist(lapply(c.split, function(sol) sol$fval)))
-  c.split <- c.split[[ix.opt]]
 
   # store the results in the above discussed objects
 
@@ -137,8 +135,6 @@ mcdc <- function(X, K, v0 = NULL, split.index = NULL, minsize = NULL, verb = NUL
     ixs[[n.clust+2]] <- ixs[[id]][-pass[[id]]]
 
     c.split <- mch(X[ixs[[n.clust+1]],], v0, minsize, verb, labels[ixs[[n.clust+1]]], maxit, ftol)
-    ix.opt <- which.max(unlist(lapply(c.split, function(sol) sol$fval)))
-    c.split <- c.split[[ix.opt]]
 
     split_indices[n.clust+1] <- split.index(c.split$v, X[ixs[[n.clust+1]],], c.split$params)
 
@@ -157,8 +153,6 @@ mcdc <- function(X, K, v0 = NULL, split.index = NULL, minsize = NULL, verb = NUL
     Parent[n.clust+1] <- id
 
     c.split <- mch(X[ixs[[n.clust+2]],], v0, minsize, verb, labels[ixs[[n.clust+2]]], maxit, ftol)
-    ix.opt <- which.max(unlist(lapply(c.split, function(sol) sol$fval)))
-    c.split <- c.split[[ix.opt]]
 
     split_indices[n.clust+2] <- split.index(c.split$v, X[ixs[[n.clust+2]],], c.split$params)
 
@@ -195,7 +189,11 @@ mcdc <- function(X, K, v0 = NULL, split.index = NULL, minsize = NULL, verb = NUL
   Nodes <- list()
   for(i in 1:length(ixs)) Nodes[[i]] <- list(ixs = ixs[[i]], v = vs[i,], b = bs[i], params = pars[[i]], fval = VRS[i], node = tree[i,], location = loci[i,])
 
-  list(cluster = asgn, model = tree, Parent = Parent, Nodes = Nodes, data = X, method = 'MCDC', args = list(v0 = v0, split.index = split.index, minsize = minsize, maxit = maxit, ftol = ftol))
+  output <- list(cluster = asgn, model = tree, Parent = Parent, Nodes = Nodes, data = X, method = 'MCDC', args = list(v0 = v0, split.index = split.index, minsize = minsize, maxit = maxit, ftol = ftol))
+
+  class(output) <- 'ppci_cluster_solution'
+
+  output
 }
 
 ### function f_mc evaluates the projection index for mcdc
@@ -339,9 +337,9 @@ mcpp <- function(v, X, P, verb, labels, maxit, ftol){
 # params = list of parameters used to find H(v, b)
 
 mch <- function(X, v0 = NULL, minsize = NULL, verb = NULL, labels = NULL, maxit = NULL, ftol = NULL){
-  
+
   if(is.data.frame(X)) X <- as.matrix(X)
-  
+
   params = list()
 
   if(is.null(minsize)) params$nmin <- 1
@@ -380,7 +378,7 @@ mch <- function(X, v0 = NULL, minsize = NULL, verb = NULL, labels = NULL, maxit 
   else if (is.function(v0)) E <- cbind(c(), v0(X))
   else E <- cbind(c(), v0)
 
-  output <- list()
+  hyperplanes <- list()
 
   for(i in 1:ncol(E)){
     v <- mcpp(E[,i], X, params, verb, labels, maxit, ftol)
@@ -391,11 +389,21 @@ mch <- function(X, v0 = NULL, minsize = NULL, verb = NULL, labels = NULL, maxit 
 
     pass <- X%*%v<b
 
-    output[[i]] <- list(cluster = pass + 1, v = v, b = b, params = params, fval = fval, method = 'MCDC')
+    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X-(X%*%v%*%t(v))[1]*v), 1)$vectors
+    else v2 <- eigen(cov(X-(X%*%v%*%t(v))[1]*v))$vectors[,1]
+
+    hyperplanes[[i]] <- list(cluster = pass + 1, v = v, b = b, params = params, fval = fval, method = 'MCDC', data = X, fitted = X%*%cbind(v, v2))
+
+    class(hyperplanes[[i]]) <- 'ppci_hyperplane_solution'
   }
 
-  output
+  best_sol <- which.max(unlist(lapply(hyperplanes, function(l) l$fval)))
 
+  output <- hyperplanes[[best_sol]]
+
+  output$alternatives <- output[-best_sol]
+
+  output
 }
 
 ### function norm_vec computes the euclidean norm of a vector. This function is used by all methods in the package

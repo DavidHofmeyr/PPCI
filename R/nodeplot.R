@@ -175,7 +175,7 @@ node_plot <- function(sol, node, labels = NULL){
 ## the default is to plot the solution with the optimal value of its projection index. If one wishes to
 ## specify which hyperplane to visualise, use hp_plot(sol[[i]], X) for the i-th solution.
 
-hp_plot <- function(sol, X, labels = NULL){
+hp_plot <- function(sol, labels = NULL){
 
   op <- par(no.readonly = TRUE)
 
@@ -198,54 +198,48 @@ hp_plot <- function(sol, X, labels = NULL){
     sol <- sol[[ix.opt]]
   }
 
-  # project data into two-dimensional subspace for plotting
-  if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X-X%*%sol$v%*%t(sol$v)), 1)$vectors[,1]
-  else v2 <- eigen(cov(X-X%*%sol$v%*%t(sol$v)))$vectors[,1]
-
-  Xp <- X%*%cbind(sol$v, v2)
-
   # compute the external quality of the split through success ratio (if labels are provided)
 
   if(!is.null(labels)){
-    prf <- success_ratio((Xp[,1]<sol$b), labels)
+    prf <- success_ratio(sol$cluster, labels)
   }
   else prf <- '-'
 
 
   # plot the projected points and the estimated density along the optimal projection
 
-  if(sol$method=='MDH') den <- density(Xp[,1], bw = sol$params$h)
-  else den <- density(Xp[,1])
+  if(sol$method=='MDH') den <- density(sol$fitted[,1], bw = sol$params$h)
+  else den <- density(sol$fitted[,1])
 
   if(is.null(labels)){
-    plot(Xp, col = (Xp[,1]<sol$b)*2+2, tck = .02, yaxt = 'n')
+    plot(sol$fitted, col = sol$cluster, tck = .02, yaxt = 'n')
   }
   else{
-    plot(Xp, col = labels, tck = .02, yaxt = 'n')
+    plot(sol$fitted, col = labels, tck = .02, yaxt = 'n')
   }
   abline(v = sol$b, col = 2, lwd = 2)
-  axis(2, labels = round(seq(min(Xp[,2]), min(Xp[,2])+(max(Xp[,2])-min(Xp[,2]))*450/512, length = 7), 1), at = seq(min(Xp[,2]), min(Xp[,2])+(max(Xp[,2])-min(Xp[,2]))*450/512, length = 7), tck = .02)
-  lines(den$x, den$y/max(den$y)*(max(Xp[,2])-min(Xp[,2]))+min(Xp[,2]), lwd = 2)
-  axis(4, labels = round(seq(0, max(den$y)*450/512, length = 7), 2), at = seq(min(Xp[,2]), min(Xp[,2])+(max(Xp[,2])-min(Xp[,2]))*450/512, length = 7), tck = .02)
-  abline(h = min(Xp[,2]))
+  axis(2, labels = round(seq(min(sol$fitted[,2]), min(sol$fitted[,2])+(max(sol$fitted[,2])-min(sol$fitted[,2]))*450/512, length = 7), 1), at = seq(min(sol$fitted[,2]), min(sol$fitted[,2])+(max(sol$fitted[,2])-min(sol$fitted[,2]))*450/512, length = 7), tck = .02)
+  lines(den$x, den$y/max(den$y)*(max(sol$fitted[,2])-min(sol$fitted[,2]))+min(sol$fitted[,2]), lwd = 2)
+  axis(4, labels = round(seq(0, max(den$y)*450/512, length = 7), 2), at = seq(min(sol$fitted[,2]), min(sol$fitted[,2])+(max(sol$fitted[,2])-min(sol$fitted[,2]))*450/512, length = 7), tck = .02)
+  abline(h = min(sol$fitted[,2]))
 
   if(!is.null(labels)){
-    T = table(Xp[,1]<sol$b, labels)
+    T = table(sol$fitted[,1]<sol$b, labels)
     split = apply(T, 2, which.max)
 
     if(max(split)==1){
-      lines(den$x, den$y/max(den$y)*(max(Xp[,2])-min(Xp[,2]))+min(Xp[,2]), col = 2, lwd = 2)
+      lines(den$x, den$y/max(den$y)*(max(sol$fitted[,2])-min(sol$fitted[,2]))+min(sol$fitted[,2]), col = 2, lwd = 2)
     }
     else if(min(split)==2){
-      lines(den$x, den$y/max(den$y)*(max(Xp[,2])-min(Xp[,2]))+min(Xp[,2]), col = 4, lwd = 2)
+      lines(den$x, den$y/max(den$y)*(max(sol$fitted[,2])-min(sol$fitted[,2]))+min(sol$fitted[,2]), col = 4, lwd = 2)
     }
     else{
       ixl <- which(labels%in%sort(unique(labels))[which(split==2)])
       ixr <- which(labels%in%sort(unique(labels))[which(split==1)])
-      denl <- density(Xp[ixl,1], bw = den$bw)
-      denr <- density(Xp[ixr,1], bw = den$bw)
-      lines(denl$x, denl$y*length(ixl)/length(labels)/max(den$y)*(max(Xp[,2])-min(Xp[,2]))+min(Xp[,2]), col = 4, lwd = 2)
-      lines(denr$x, denr$y*length(ixr)/length(labels)/max(den$y)*(max(Xp[,2])-min(Xp[,2]))+min(Xp[,2]), col = 2, lwd = 2)
+      denl <- density(sol$fitted[ixl,1], bw = den$bw)
+      denr <- density(sol$fitted[ixr,1], bw = den$bw)
+      lines(denl$x, denl$y*length(ixl)/length(labels)/max(den$y)*(max(sol$fitted[,2])-min(sol$fitted[,2]))+min(sol$fitted[,2]), col = 4, lwd = 2)
+      lines(denr$x, denr$y*length(ixr)/length(labels)/max(den$y)*(max(sol$fitted[,2])-min(sol$fitted[,2]))+min(sol$fitted[,2]), col = 2, lwd = 2)
     }
   }
 

@@ -1,3 +1,48 @@
+### plot functions for classes 'ppci_cluster_solution' and 'ppci_hyperplane_solution' provide
+### wrappers for functions tree_plot, node_plot and hp_plot. Plotting an object of class
+### 'ppci_cluster_solution' will use tree_plot, representing the entire solution, if the node
+### number is not specified, otherwise it will use the function node_plot which provides a more
+### detailed view of the chosen node in the hierarchical model. plot function for class
+### 'ppci_projection_solution' plots the first two dimensions of the projected data. If argument
+### pairs is given, then pairs of dimensions are plotted agains one another.
+
+plot.ppci_cluster_solution <- function(x, node = NULL, labels = NULL, node.numbers = NULL, ...){
+  #control <- list(...)
+  if(is.null(node)) tree_plot(x, labels, node.numbers)
+  else node_plot(x, node, labels)
+}
+
+plot.ppci_hyperplane_solution <- function(x, labels = NULL, ...){
+  #control <- list(...)
+  hp_plot(x, labels)
+}
+
+plot.ppci_projection_solution <- function(x, labels = NULL, pairs = NULL, PCA = NULL, ...){
+  #control <- list(...)
+  if(!is.null(PCA) && PCA) x$fitted <- x$fitted%*%eigen(cov(x$fitted))$vectors
+  if(is.null(pairs)){
+    if(is.null(labels)) plot(x$fitted[,1:2])
+    else{
+      lab_new <- numeric(length(labels))
+      u <- unique(labels)
+      for(i in 1:length(u)) lab_new[which(labels==u[i])] = i
+      labels <- lab_new
+      plot(x$fitted[,1:2], col = labels)
+    }
+  }
+  else if(is.numeric(pairs)){
+    if(is.null(labels)) pairs(x$fitted[,1:pairs])
+    else{
+      lab_new <- numeric(length(labels))
+      u <- unique(labels)
+      for(i in 1:length(u)) lab_new[which(labels==u[i])] = i
+      labels <- lab_new
+      pairs(x$fitted[,1:pairs], col = labels)
+    }
+  }
+  else stop('pairs must be a positive integer')
+}
+
 ### function tree_plot provides an illustration of a complete hierarchical clustering solution
 ### arising from any of the clustering algorithms in the package. each partition in the slution
 ### is visualised through a two-dimensional plot of the data being split at the relevant node.
@@ -7,7 +52,8 @@
 #           points are coloured according to the different two-way partitions
 # node.numbers = logical. should the order in which nodes were added to the solution be indicated on the plot or not.
 
-tree_plot <- function(sol, labels = NULL, node.numbers = TRUE){
+tree_plot <- function(sol, labels = NULL, node.numbers = NULL){
+  if(is.null(node.numbers)) node.numbers <- TRUE
   op <- par(no.readonly = TRUE)
   par(mar = c(0, 0, 0, 0))
   X <- sol$data

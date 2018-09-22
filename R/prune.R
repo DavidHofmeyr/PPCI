@@ -115,8 +115,6 @@ tree_split <- function(sol, node, ...){
       if(!is.null(control$ftol)) args_split$ftol <- control$ftol
 
       c.split <- mch(sol$data[sol$Nodes[[node]]$ixs,], v0 = args_split$v0, minsize = args_split$minsize, maxit = args_split$maxit, ftol = args_split$ftol)
-      ix.opt <- which.max(unlist(lapply(c.split, function(sol) sol$fval)))
-      c.split <- c.split[[ix.opt]]
 
       sol$Nodes[[node]]$v <- c.split$v
 
@@ -139,8 +137,6 @@ tree_split <- function(sol, node, ...){
     sol$Parent <- c(sol$Parent, node, node)
 
     c.split <- mch(sol$data[sol$Nodes[[n.clust+1]]$ixs,], v0 = sol$args$v0, minsize = sol$args$minsize, maxit = sol$args$maxit, ftol = sol$args$ftol)
-    ix.opt <- which.max(unlist(lapply(c.split, function(sol) sol$fval)))
-    c.split <- c.split[[ix.opt]]
 
     sol$model <- rbind(sol$model, c(sol$model[node,1]+1, 2*sol$model[node,2]-1))
 
@@ -157,8 +153,6 @@ tree_split <- function(sol, node, ...){
     sol$Nodes[[n.clust+1]]$node <- sol$model[n.clust+1,]
 
     c.split <- mch(sol$data[sol$Nodes[[n.clust+2]]$ixs,], v0 = sol$args$v0, minsize = sol$args$minsize, maxit = sol$args$maxit, ftol = sol$args$ftol)
-    ix.opt <- which.max(unlist(lapply(c.split, function(sol) sol$fval)))
-    c.split <- c.split[[ix.opt]]
 
     sol$Nodes[[n.clust+2]]$v <- c.split$v
 
@@ -202,8 +196,6 @@ tree_split <- function(sol, node, ...){
       if(!is.null(control$ftol)) args_split$ftol <- control$ftol
 
       c.split <- mdh(sol$data[sol$Nodes[[node]]$ixs,], v0 = args_split$v0, minsize = args_split$minsize, bandwidth = args_split$bandwidth, alphamin = args_split$alphamin, alphamax = args_split$alphamax, maxit = args_split$maxit, ftol = args_split$ftol)
-      ix.opt <- which.max(unlist(lapply(c.split, function(sol) sol$rel.dep)))
-      c.split <- c.split[[ix.opt]]
 
       sol$Nodes[[node]]$v <- c.split$v
 
@@ -233,8 +225,6 @@ tree_split <- function(sol, node, ...){
     sol$Parent <- c(sol$Parent, node, node)
 
     c.split <- mdh(sol$data[sol$Nodes[[n.clust+1]]$ixs,], v0 = sol$args$v0, minsize = sol$args$minsize, bandwidth = sol$args$bandwidth, alphamin = sol$args$alphamin, alphamax = sol$args$alphamax, maxit = sol$args$maxit, ftol = sol$args$ftol)
-    ix.opt <- which.max(unlist(lapply(c.split, function(sol) sol$rel.dep)))
-    c.split <- c.split[[ix.opt]]
 
     sol$model <- rbind(sol$model, c(sol$model[node,1]+1, 2*sol$model[node,2]-1))
 
@@ -253,8 +243,6 @@ tree_split <- function(sol, node, ...){
     sol$Nodes[[n.clust+1]]$node <- sol$model[n.clust+1,]
 
     c.split <- mdh(sol$data[sol$Nodes[[n.clust+2]]$ixs,], v0 = sol$args$v0, minsize = sol$args$minsize, bandwidth = sol$args$bandwidth, alphamin = sol$args$alphamin, alphamax = sol$args$alphamax, maxit = sol$args$maxit, ftol = sol$args$ftol)
-    ix.opt <- which.max(unlist(lapply(c.split, function(sol) sol$rel.dep)))
-    c.split <- c.split[[ix.opt]]
 
     sol$Nodes[[n.clust+2]]$v <- c.split$v
 
@@ -296,8 +284,6 @@ tree_split <- function(sol, node, ...){
       if(!is.null(control$ftol)) args_split$ftol <- control$ftol
 
       c.split <- ncuth(sol$data[sol$Nodes[[node]]$ixs,], v0 = args_split$v0, s = args_split$s, minsize = args_split$minsize, maxit = args_split$maxit, ftol = args_split$ftol)
-      ix.opt <- which.min(unlist(lapply(c.split, function(sol) sol$fval)))
-      c.split <- c.split[[ix.opt]]
 
       sol$Nodes[[node]]$v <- c.split$v
 
@@ -321,8 +307,6 @@ tree_split <- function(sol, node, ...){
     sol$Parent <- c(sol$Parent, node, node)
 
     c.split <- ncuth(sol$data[sol$Nodes[[n.clust+1]]$ixs,], v0 = sol$args$v0, s = sol$args$s, minsize = sol$args$minsize, maxit = sol$args$maxit, ftol = sol$args$ftol)
-    ix.opt <- which.min(unlist(lapply(c.split, function(sol) sol$fval)))
-    c.split <- c.split[[ix.opt]]
 
     sol$model <- rbind(sol$model, c(sol$model[node,1]+1, 2*sol$model[node,2]-1))
 
@@ -339,8 +323,6 @@ tree_split <- function(sol, node, ...){
     sol$Nodes[[n.clust+1]]$node <- sol$model[n.clust+1,]
 
     c.split <- ncuth(sol$data[sol$Nodes[[n.clust+2]]$ixs,], v0 = sol$args$v0, s = sol$args$s, minsize = sol$args$minsize, maxit = sol$args$maxit, ftol = sol$args$ftol)
-    ix.opt <- which.min(unlist(lapply(c.split, function(sol) sol$fval)))
-    c.split <- c.split[[ix.opt]]
 
     sol$Nodes[[n.clust+2]]$v <- c.split$v
 
