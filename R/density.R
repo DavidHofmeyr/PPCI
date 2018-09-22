@@ -376,7 +376,7 @@ is_minim <- function(v, X, P){
   # minimum of the density
 
   modes <- which(apply(rbind(d$y[3:200], d$y[2:199], d$y[1:198]), 2, function(x) x[2]>=max(x))) + 1
-  bix <- which.min(d$y)
+  bix <- which.min(d$y[modes[1]:max(modes)]) + modes[1] - 1
 
   if(bix > modes[1] && bix < max(modes) && min(sum(p<d$x[bix]), sum(p>d$x[bix]))>P$nmin) return(TRUE)
   else return(FALSE)
