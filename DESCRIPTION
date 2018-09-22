@@ -1,7 +1,7 @@
 Package: PPCI
 Type: Package
 Title: Projection Pursuit for Cluster Identification
-Version: 0.1.0
+Version: 0.1.3
 Author: David Hofmeyr <dhofmeyr@sun.ac.za> [aut, cre]
 	Nicos Pavlidis <n.pavlidis@lancaster.ac.uk> [aut]
 Maintainer: David Hofmeyr <dhofmeyr@sun.ac.za>
@@ -12,8 +12,8 @@ Description: Implements recently developed projection
     minimum normalised cut, Hofmeyr (2017) <doi:10.1109/TPAMI.2016.2609929>;
     and maximum variance ratio clusterability, Hofmeyr and Pavlidis (2015) <doi:10.1109/SSCI.2015.116>.
 Depends: R (>= 2.10.0)
+Suggests: rARPACK
 License: GPL-3
 Encoding: UTF-8
 LazyData: yes
-Imports: rARPACK
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
