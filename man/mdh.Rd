@@ -20,14 +20,17 @@ mdh(X, v0, minsize, bandwidth, alphamin, alphamax, verb, labels, maxit, ftol)
   \item{ftol}{(optional) tolerance level for convergence of optimisation, based on relative function value improvements. if omitted then ftol = 1e-5.}
 }
 \value{
-  an unnamed list containing one entry for each initialisation (column of v0). each entry is a named list with the following components
+  a named list with class ppci_hyperplane_solution with the following components
   \item{$cluster}{cluster assignment vector.}
   \item{$v}{the optimal projection vector.}
   \item{$b}{the value of b making H(v, b) the minimum density hyperplane.}
+  \item{$fitted}{data projected into two dimensional subspace defined by $v and the principal component in the null space of $v.}
+  \item{$data}{the input data matrix.}
   \item{$rel.dep}{the relative depth of H(v, b).}
   \item{$fval}{the integrated dentsity on H(v, b).}
   \item{$method}{=="MDH".}
   \item{$params}{list of parameters used to find H(v, b).}
+  \item{$alternatives}{an unnamed list. If more than one initilisation is considered, the alternatives to the best are stored in this field.}
 }
 \references{
   Pavlidis N.G., Hofmeyr D.P., Tasoulis S.K. (2016) Minimum Density Hyperplanes. \emph{Journal of
@@ -41,9 +44,9 @@ data(breastcancer)
 sol <- mdh(breastcancer$x)
 
 ## visualise the solution
-hp_plot(sol, breastcancer$x)
+plot(sol)
 
 ## evaluate the quality of the partition
-success_ratio(sol[[1]]$cluster, breastcancer$c)
+success_ratio(sol$cluster, breastcancer$c)
 }
 \keyword{file}

@@ -2,7 +2,7 @@
 \alias{success_ratio}
 \title{Evaluate External Valifity os a Binary Partition}
 \description{
-  Computes the success ratio of a binary partition by comparing the solution with true class labels. 
+  Computes the success ratio of a binary partition by comparing the solution with true class labels.
 }
 \usage{
 success_ratio(assigned, labels)
@@ -25,6 +25,6 @@ data(optidigits)
 sol <- ncuth(optidigits$x)
 
 ## evaluate using success ratio
-success_ratio(sol[[1]]$cluster, optidigits$c)
+success_ratio(sol$cluster, optidigits$c)
 }
 \keyword{file}

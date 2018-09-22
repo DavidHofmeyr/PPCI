@@ -25,7 +25,7 @@ sol <- ncutdc(optidigits$x, 12)
 ## the node numbered 11 has been split,
 ## yet it appears there may not be multiple clusters present.
 ## inspect this node more closely
-node_plot(sol, 11)
+plot(sol, node = 11)
 
 ## remove this node from the model
 sol_new <- tree_prune(sol, 11)

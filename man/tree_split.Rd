@@ -24,10 +24,10 @@ data(optidigits)
 sol <- ncutdc(optidigits$x, 8)
 
 ## visualise solution
-tree_plot(sol, node.numbers = TRUE)
+plot(sol)
 
 ## node 13 shows evidence of multiple clusters. Inspect this node more closely
-node_plot(sol, 13)
+plot(sol, node = 13)
 
 ## split node 13
 sol_new <- tree_split(sol, 13)

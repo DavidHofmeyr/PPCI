@@ -12,14 +12,4 @@ node_plot(sol, node, labels)
   \item{node}{the node to be visualised. can be either an integer specifying the node number in sol$Nodes or a vector of length two specifying c(depth, position at depth) of the node.}
   \item{labels}{(optional) a vector of class labels. if provided then points in different classes are plotted in different colours. the external validity of each partition is also indicated when this can be computed using true class labels.}
 }
-\examples{
-## load optidigits dataset
-data(optidigits)
-
-## generate a divisive clustering model using NCUTDC
-sol <- ncutdc(optidigits$x, 10)
-
-## visualise the node at depth 3 and position 2
-node_plot(sol, c(3, 3))
-}
-\keyword{file}
+\keyword{internal}

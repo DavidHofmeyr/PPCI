@@ -17,13 +17,16 @@ mch(X, v0, minsize, verb, labels, maxit, ftol)
   \item{ftol}{(optional) tolerance level for convergence of optimisation, based on relative function value improvements. if omitted then ftol = 1e-8.}
 }
 \value{
-  an unnamed list containing one entry for each initialisation (column of v0). each entry is a named list with the following components
+  a named list with class ppci_hyperplane_solution with the following components
   \item{$cluster}{cluster assignment vector.}
   \item{$v}{the optimal projection vector.}
   \item{$b}{the value of b making H(v, b) the minimum normalised cut hyperplane.}
+  \item{$fitted}{data projected into two dimensional subspace defined by $v and the principal component in the null space of $v.}
+  \item{$data}{the input data matrix.}
   \item{$fval}{the variance ratio clusterability across H(v, b).}
   \item{$method}{=="MCDC".}
   \item{$params}{list of parameters used to find H(v, b).}
+  \item{$alternatives}{an unnamed list. If more than one initilisation is considered, the alternatives to the best are stored in this field.}
 }
 \references{
   Hofmeyr, D., Pavlidis, N. (2015) Maximum Clusterability Divisive Clustering. \emph{Computational Intelligence, 2015 IEEE Symposium Series on}, pp. 780--786.
@@ -41,6 +44,6 @@ X[,2] <- X[,2] + rep(c(-.8, .8), each = 500)
 sol <- mch(X)
 
 ## visualise the solution
-plot(X, col = sol[[1]]$cluster)
+plot(X, col = sol$cluster)
 }
 \keyword{file}

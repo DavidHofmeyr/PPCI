@@ -21,7 +21,7 @@ ncutdc(X, K, split.index, v0, s, minsize, verb, labels, maxit, ftol)
   \item{ftol}{(optional) tolerance level for convergence of optimisation, based on relative function value improvements. if omitted then ftol = 1e-8.}
 }
 \value{
-  a named list containing
+  a named list with class ppci_cluster_solution containing
   \item{$cluster}{cluster assignment vector.}
   \item{$model}{matrix containing the would-be location of each node (depth and position at depth) within a complete tree of appropriate depth.}
   \item{$nodes}{unnamed list each element of which is a named list containing details of the binary partitions at each node in the model.}

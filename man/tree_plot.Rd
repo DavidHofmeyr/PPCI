@@ -12,14 +12,4 @@ tree_plot(sol, labels, node.numbers)
   \item{labels}{(optional) a vector of class labels. if provided then points in different classes are plotted in different colours.}
   \item{node.numbers}{(optional) logical. if TRUE then numbers are added to the plot to indicate the order in which nodes were added to the model. if omitted then node.numbers = TRUE.}
 }
-\examples{
-## load optidigits dataset
-data(optidigits)
-
-## generate hierarchical clustering model using NCUTDC algorithm
-sol <- ncutdc(optidigits$x, 10)
-
-## visualise the solution
-tree_plot(sol)
-}
-\keyword{file}
+\keyword{internal}
