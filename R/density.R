@@ -370,15 +370,16 @@ is_minim <- function(v, X, P){
 
   p <- X%*%v/norm_vec(v)
   s <- sd(p)
-  d <- density(p, bw = P$h, from = -P$alpha*s, to = P$alpha*s, n = 100)
+  d <- density(p, bw = P$h, n = 200)
 
   # if the minimum lies at one of the boundaries then it is not a local
   # minimum of the density
 
+  modes <- which(apply(rbind(d$y[3:200], d$y[2:199], d$y[1:198]), 2, function(x) x[2]>=max(x))) + 1
   bix <- which.min(d$y)
 
-  if(bix%in%c(1, 100) || min(sum(p<d$x[bix]), sum(p>d$x[bix]))<P$nmin) return(FALSE)
-  else return(TRUE)
+  if(bix > modes[1] && bix < max(modes) && min(sum(p<d$x[bix]), sum(p>d$x[bix]))>P$nmin) return(TRUE)
+  else return(FALSE)
 }
 
 
