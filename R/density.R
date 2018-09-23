@@ -489,7 +489,15 @@ mdh <- function(X, v0 = NULL, minsize = NULL, bandwidth = NULL, alphamin = NULL,
 
   if(is.vector(X)) n <- 1
   else n <- nrow(X)
-  if(n<(2*params$nmin)) return(list(list(cluster = numeric(n), v = numeric(ncol(rbind(c(), X))) + 1, b = NA, rel.dep = 0, fval = Inf, params = list(alpha=0,K=1000,h=1))))
+  if(n<(2*params$nmin)){
+    v <- numeric(ncol(X)) + 1/sqrt(ncol(X))
+    b <- mean(X%*%v)
+    rel.dep <- 0
+    fval <- Inf
+    cluster <- numeric(nrow(X)) + 1
+    fitted <- X[,1:2]
+    return(list(cluster = cluster, v = v, b = b, rel.dep = 0, fval = Inf, params = list(alpha=0,K=1000,h=1), fitted = fitted, data = X, method = 'MDH'))
+  }
 
 
 

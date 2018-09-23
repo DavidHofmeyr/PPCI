@@ -234,7 +234,9 @@ ncuth <- function(X, v0 = NULL, s = NULL, minsize = NULL, verb = NULL, labels = 
 
   # if the data contain fewer than 2*nmin points then don't split
 
-  if(n<(2*params$nmin)) return(list(list(cluster = numeric(n)+1, v = numeric(ncol(rbind(c(),X)))+1, b = 0, params = list(s = 100, nmin = params$nmin), fval = Inf, method = 'NCutH')))
+  if(n<(2*params$nmin)){
+    return(list(cluster = numeric(n)+1, v = numeric(ncol(rbind(c(),X)))+1, b = 0, params = list(s = 100, nmin = params$nmin), fval = Inf, method = 'NCutH', data = X, fitted = X[,1:2]))
+  }
 
 
   # if labels are supplied, ensure they are integers 1:K (K the number of classes)

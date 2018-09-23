@@ -360,7 +360,9 @@ mch <- function(X, v0 = NULL, minsize = NULL, verb = NULL, labels = NULL, maxit 
 
   if(is.vector(X)) n <- 1
   else n <- nrow(X)
-  if(n<(2*params$nmin)) return(list(list(cluster = c(0, numeric(n-1) + 1), v = numeric(ncol(rbind(c(), X))) + 1, b = 0, params = list(nmin=1), fval = -Inf)))
+  if(n<(2*params$nmin)){
+    return(list(cluster = numeric(nrow(X)) + 1, v = numeric(ncol(X))+1/sqrt(ncol(X)), b = 0, params = list(nmin = 1), fval = 0, method = 'MCDC', data = X, fitted = X[,1:2]))
+  }
 
   if(is.null(verb)) verb = 0
 
