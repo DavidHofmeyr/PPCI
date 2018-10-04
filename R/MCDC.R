@@ -391,8 +391,8 @@ mch <- function(X, v0 = NULL, minsize = NULL, verb = NULL, labels = NULL, maxit 
 
     pass <- X%*%v<b
 
-    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X-(X%*%v%*%t(v))[1]*v), 1)$vectors
-    else v2 <- eigen(cov(X-(X%*%v%*%t(v))[1]*v))$vectors[,1]
+    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X-X%*%v%*%t(v)), 1)$vectors
+    else v2 <- eigen(cov(X-X%*%v%*%t(v)))$vectors[,1]
 
     hyperplanes[[i]] <- list(cluster = pass + 1, v = v, b = b, params = params, fval = fval, method = 'MCDC', data = X, fitted = X%*%cbind(v, v2))
 

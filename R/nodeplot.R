@@ -8,8 +8,9 @@
 # labels = vector of length n. If class labels are given then the
 #          performance at the specified node is given.
 
-node_plot <- function(sol, node, labels = NULL){
+node_plot <- function(sol, node, labels = NULL, transparency = NULL){
   op <- par(no.readonly = TRUE)
+  if(is.null(transparency)) transparency = 0
 
   # if node location is given by its position (rather than number), then determine its number
 
@@ -91,13 +92,29 @@ node_plot <- function(sol, node, labels = NULL){
 
   if(is.null(labels)){
     if(is.leaf){
-      if(sol$model[node,2]%%2) plot(Xp, col = 4, tck = .02, yaxt = 'n', bty = 'n')
-      else plot(Xp, col = 2, tck = .02, yaxt = 'n', bty = 'n')
+      if(sol$model[node,2]%%2){
+        if(transparency==0) plot(Xp, col = 4, tck = .02, yaxt = 'n', bty = 'n')
+        else plot(Xp, col = rgb(0, 0, 1, transparency), pch = 16, tck = .02, yaxt = 'n', bty = 'n')
+      }
+      else{
+        if(transparency==0) plot(Xp, col = 2, tck = .02, yaxt = 'n', bty = 'n')
+        else plot(Xp, col = rgb(1, 0, 0, transparency), pch = 16, tck = .02, yaxt = 'n', bty = 'n')
+      }
     }
-    else plot(Xp, col = (Xp[,1]<sol$Nodes[[node]]$b)*2+2, tck = .02, yaxt = 'n', bty = 'n')
+    else{
+      if(transparency==0) plot(Xp, col = (Xp[,1]<sol$Nodes[[node]]$b)*2+2, tck = .02, yaxt = 'n', bty = 'n')
+      else plot(Xp, col = sapply((Xp[,1]<sol$Nodes[[node]]$b)*2+2, function(c){
+        cl = col2rgb(c)
+        rgb(cl[1]/255, cl[2]/255, cl[3]/255, transparency)
+      }), pch = 16, tck = .02, yaxt = 'n', bty = 'n')
+    }
   }
   else{
-    plot(Xp, col = labels[sol$Nodes[[node]]$ixs], tck = .02, yaxt = 'n', bty = 'n')
+    if(transparency==0) plot(Xp, col = labels[sol$Nodes[[node]]$ixs], tck = .02, yaxt = 'n', bty = 'n')
+    else plot(Xp, col = sapply(labels[sol$Nodes[[node]]$ixs], function(c){
+      cl = col2rgb(c)
+      rgb(cl[1]/255, cl[2]/255, cl[3]/255, transparency)
+    }), pch = 16, tck = .02, yaxt = 'n', bty = 'n')
   }
   axis(2, labels = round(seq(min(Xp[,2]), min(Xp[,2])+(max(Xp[,2])-min(Xp[,2]))*450/512, length = 7), 1), at = seq(min(Xp[,2]), min(Xp[,2])+(max(Xp[,2])-min(Xp[,2]))*450/512, length = 7), tck = .02)
   lines(den$x, den$y/max(den$y)*(max(Xp[,2])-min(Xp[,2]))+min(Xp[,2]), lwd = 2)
@@ -175,9 +192,11 @@ node_plot <- function(sol, node, labels = NULL){
 ## the default is to plot the solution with the optimal value of its projection index. If one wishes to
 ## specify which hyperplane to visualise, use hp_plot(sol[[i]], X) for the i-th solution.
 
-hp_plot <- function(sol, labels = NULL){
+hp_plot <- function(sol, labels = NULL, transparency = NULL){
 
   op <- par(no.readonly = TRUE)
+
+  if(is.null(transparency)) transparency = 0
 
   par(mar = c(2, 2, 2, 2))
 
@@ -212,10 +231,18 @@ hp_plot <- function(sol, labels = NULL){
   else den <- density(sol$fitted[,1])
 
   if(is.null(labels)){
-    plot(sol$fitted, col = sol$cluster, tck = .02, yaxt = 'n')
+    if(transparency==0) plot(sol$fitted, col = sol$cluster*2, tck = .02, yaxt = 'n')
+    else plot(sol$fitted, col = sapply(sol$cluster*2, function(c){
+      cl = col2rgb(c)
+      rgb(cl[1]/255, cl[2]/255, cl[3]/255, transparency)
+    }), pch = 16, tck = .02, yaxt = 'n')
   }
   else{
-    plot(sol$fitted, col = labels, tck = .02, yaxt = 'n')
+    if(transparency==0) plot(sol$fitted, col = labels, tck = .02, yaxt = 'n')
+    else plot(sol$fitted, col = sapply(labels, function(c){
+      cl = col2rgb(c)
+      rgb(cl[1]/255, cl[2]/255, cl[3]/255, transparency)
+    }), pch = 16, tck = .02, yaxt = 'n')
   }
   abline(v = sol$b, col = 2, lwd = 2)
   axis(2, labels = round(seq(min(sol$fitted[,2]), min(sol$fitted[,2])+(max(sol$fitted[,2])-min(sol$fitted[,2]))*450/512, length = 7), 1), at = seq(min(sol$fitted[,2]), min(sol$fitted[,2])+(max(sol$fitted[,2])-min(sol$fitted[,2]))*450/512, length = 7), tck = .02)

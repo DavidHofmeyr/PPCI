@@ -572,10 +572,10 @@ mdh <- function(X, v0 = NULL, minsize = NULL, bandwidth = NULL, alphamin = NULL,
       depth <- 0
     }
 
-    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X-(X%*%v%*%t(v))[1]*v), 1)$vectors
-    else v2 <- eigen(cov(X-(X%*%v%*%t(v))[1]*v))$vectors[,1]
+    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X-X%*%v%*%t(v)), 1)$vectors
+    else v2 <- eigen(cov(X-X%*%v%*%t(v)))$vectors[,1]
 
-    hyperplanes[[i]] <- list(cluster = pass+1, v = v, b = b + (mns%*%v)[1], rel.dep = depth, fval = fval, params = params, method = 'MDH', data = t(t(X)+mns), fitted = X%*%cbind(v, v2))
+    hyperplanes[[i]] <- list(cluster = pass+1, v = v, b = b + (mns%*%v)[1], rel.dep = depth, fval = fval, params = params, method = 'MDH', data = t(t(X)+mns), fitted = t(t(X)+mns)%*%cbind(v, v2))
 
     class(hyperplanes[[i]]) <- 'ppci_hyperplane_solution'
   }
