@@ -375,11 +375,12 @@ is_minim <- function(v, X, P){
   # if the minimum lies at one of the boundaries then it is not a local
   # minimum of the density
 
+  pen <- d$y + P$C*((d$x<(-P$alpha*s))*(-P$alpha*s-d$x)^2 + (d$x>(P$alpha*s))*(d$x-P$alpha*s)^2)
+  
   modes <- which(apply(rbind(d$y[3:200], d$y[2:199], d$y[1:198]), 2, function(x) x[2]>=max(x))) + 1
-  bix <- which.min(d$y[modes[1]:max(modes)]) + modes[1] - 1
+  bix <- which.min(pen)
 
-  if(bix > modes[1] && bix < max(modes) && min(sum(p<d$x[bix]), sum(p>d$x[bix]))>P$nmin) return(TRUE)
-  else return(FALSE)
+  (bix > modes[1] && bix < max(modes) && min(sum(p<d$x[bix]), sum(p>d$x[bix]))>P$nmin)
 }
 
 
