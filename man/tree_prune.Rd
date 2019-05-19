@@ -20,15 +20,15 @@ data(optidigits)
 
 ## cluster using minimum normalised cut hyperplanes,
 ## assuming no domain knowledge begin with 12 clusters
-sol <- ncutdc(optidigits$x, 12)
+sol <- ncutdc(optidigits$x, 13)
 
-## the node numbered 11 has been split,
+## the node numbered 4 has been split,
 ## yet it appears there may not be multiple clusters present.
 ## inspect this node more closely
-plot(sol, node = 11)
+plot(sol, node = 4)
 
 ## remove this node from the model
-sol_new <- tree_prune(sol, 11)
+sol_new <- tree_prune(sol, 4)
 
 ## compare the solutions using external cluster validity metrics
 
