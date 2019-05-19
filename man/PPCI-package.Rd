@@ -19,7 +19,7 @@ Type: Package
 
 Title:  Projection Pursuit for Cluster Identification
 
-Version:  0.1.0
+Version:  0.1.5
 
 Depends:  R (>= 2.10.0)
 
@@ -27,7 +27,9 @@ License:  GPL-3
 
 LazyData: yes
 
-Imports:  rARPACK
+Imports:  Rcpp (>= 0.12.16), rARPACK
+
+LinkingTo: Rcpp, RcppArmadillo
 
 }
 \author{

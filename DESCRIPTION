@@ -12,9 +12,8 @@ Description: Implements recently developed projection
     minimum normalised cut, Hofmeyr (2017) <doi:10.1109/TPAMI.2016.2609929>;
     and maximum variance ratio clusterability, Hofmeyr and Pavlidis (2015) <doi:10.1109/SSCI.2015.116>.
 Depends: R (>= 2.10.0)
-Imports: Rcpp (>= 0.12.16), RcppArmadillo
+Imports: Rcpp (>= 0.12.16), rARPACK
 LinkingTo: Rcpp, RcppArmadillo
-Suggests: rARPACK
 License: GPL-3
 Encoding: UTF-8
 LazyData: yes

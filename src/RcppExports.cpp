@@ -104,12 +104,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_PPCI_f_md_cpp", (DL_FUNC) &_PPCI2_f_md_cpp, 7},
-    {"_PPCI_df_md_cpp", (DL_FUNC) &_PPCI2_df_md_cpp, 7},
-    {"_PPCI_ismin_cpp", (DL_FUNC) &_PPCI2_ismin_cpp, 7},
-    {"_PPCI_md_b_cpp", (DL_FUNC) &_PPCI2_md_b_cpp, 7},
-    {"_PPCI_ncut_x", (DL_FUNC) &_PPCI2_ncut_x, 4},
-    {"_PPCI_dncut_x", (DL_FUNC) &_PPCI2_dncut_x, 4},
+    {"_PPCI_f_md_cpp", (DL_FUNC) &_PPCI_f_md_cpp, 7},
+    {"_PPCI_df_md_cpp", (DL_FUNC) &_PPCI_df_md_cpp, 7},
+    {"_PPCI_ismin_cpp", (DL_FUNC) &_PPCI_ismin_cpp, 7},
+    {"_PPCI_md_b_cpp", (DL_FUNC) &_PPCI_md_b_cpp, 7},
+    {"_PPCI_ncut_x", (DL_FUNC) &_PPCI_ncut_x, 4},
+    {"_PPCI_dncut_x", (DL_FUNC) &_PPCI_dncut_x, 4},
     {NULL, NULL, 0}
 };
 
