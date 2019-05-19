@@ -2,26 +2,26 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 f_md_cpp <- function(v, X, n, d, h, al, C) {
-    .Call(`_PPCI2_f_md_cpp`, v, X, n, d, h, al, C)
+    .Call(`_PPCI_f_md_cpp`, v, X, n, d, h, al, C)
 }
 
 df_md_cpp <- function(v, X, n, d, h, al, C) {
-    .Call(`_PPCI2_df_md_cpp`, v, X, n, d, h, al, C)
+    .Call(`_PPCI_df_md_cpp`, v, X, n, d, h, al, C)
 }
 
 ismin_cpp <- function(v, X, n, d, h, al, C) {
-    .Call(`_PPCI2_ismin_cpp`, v, X, n, d, h, al, C)
+    .Call(`_PPCI_ismin_cpp`, v, X, n, d, h, al, C)
 }
 
 md_b_cpp <- function(v, X, n, d, h, al, C) {
-    .Call(`_PPCI2_md_b_cpp`, v, X, n, d, h, al, C)
+    .Call(`_PPCI_md_b_cpp`, v, X, n, d, h, al, C)
 }
 
 ncut_x <- function(x, h, n, kmin) {
-    .Call(`_PPCI2_ncut_x`, x, h, n, kmin)
+    .Call(`_PPCI_ncut_x`, x, h, n, kmin)
 }
 
 dncut_x <- function(x, h, n, kmin) {
-    .Call(`_PPCI2_dncut_x`, x, h, n, kmin)
+    .Call(`_PPCI_dncut_x`, x, h, n, kmin)
 }
 
