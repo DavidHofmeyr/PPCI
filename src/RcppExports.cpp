@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // f_md_cpp
 double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, double C);
-RcppExport SEXP _PPCI2_f_md_cpp(SEXP vSEXP, SEXP XSEXP, SEXP nSEXP, SEXP dSEXP, SEXP hSEXP, SEXP alSEXP, SEXP CSEXP) {
+RcppExport SEXP _PPCI_f_md_cpp(SEXP vSEXP, SEXP XSEXP, SEXP nSEXP, SEXP dSEXP, SEXP hSEXP, SEXP alSEXP, SEXP CSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -25,7 +25,7 @@ END_RCPP
 }
 // df_md_cpp
 arma::vec df_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, double C);
-RcppExport SEXP _PPCI2_df_md_cpp(SEXP vSEXP, SEXP XSEXP, SEXP nSEXP, SEXP dSEXP, SEXP hSEXP, SEXP alSEXP, SEXP CSEXP) {
+RcppExport SEXP _PPCI_df_md_cpp(SEXP vSEXP, SEXP XSEXP, SEXP nSEXP, SEXP dSEXP, SEXP hSEXP, SEXP alSEXP, SEXP CSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -42,7 +42,7 @@ END_RCPP
 }
 // ismin_cpp
 int ismin_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, double C);
-RcppExport SEXP _PPCI2_ismin_cpp(SEXP vSEXP, SEXP XSEXP, SEXP nSEXP, SEXP dSEXP, SEXP hSEXP, SEXP alSEXP, SEXP CSEXP) {
+RcppExport SEXP _PPCI_ismin_cpp(SEXP vSEXP, SEXP XSEXP, SEXP nSEXP, SEXP dSEXP, SEXP hSEXP, SEXP alSEXP, SEXP CSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -59,7 +59,7 @@ END_RCPP
 }
 // md_b_cpp
 double md_b_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, double C);
-RcppExport SEXP _PPCI2_md_b_cpp(SEXP vSEXP, SEXP XSEXP, SEXP nSEXP, SEXP dSEXP, SEXP hSEXP, SEXP alSEXP, SEXP CSEXP) {
+RcppExport SEXP _PPCI_md_b_cpp(SEXP vSEXP, SEXP XSEXP, SEXP nSEXP, SEXP dSEXP, SEXP hSEXP, SEXP alSEXP, SEXP CSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -76,7 +76,7 @@ END_RCPP
 }
 // ncut_x
 double ncut_x(NumericVector x, double h, int n, int kmin);
-RcppExport SEXP _PPCI2_ncut_x(SEXP xSEXP, SEXP hSEXP, SEXP nSEXP, SEXP kminSEXP) {
+RcppExport SEXP _PPCI_ncut_x(SEXP xSEXP, SEXP hSEXP, SEXP nSEXP, SEXP kminSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -90,7 +90,7 @@ END_RCPP
 }
 // dncut_x
 NumericVector dncut_x(NumericVector x, double h, int n, int kmin);
-RcppExport SEXP _PPCI2_dncut_x(SEXP xSEXP, SEXP hSEXP, SEXP nSEXP, SEXP kminSEXP) {
+RcppExport SEXP _PPCI_dncut_x(SEXP xSEXP, SEXP hSEXP, SEXP nSEXP, SEXP kminSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -104,16 +104,16 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_PPCI2_f_md_cpp", (DL_FUNC) &_PPCI2_f_md_cpp, 7},
-    {"_PPCI2_df_md_cpp", (DL_FUNC) &_PPCI2_df_md_cpp, 7},
-    {"_PPCI2_ismin_cpp", (DL_FUNC) &_PPCI2_ismin_cpp, 7},
-    {"_PPCI2_md_b_cpp", (DL_FUNC) &_PPCI2_md_b_cpp, 7},
-    {"_PPCI2_ncut_x", (DL_FUNC) &_PPCI2_ncut_x, 4},
-    {"_PPCI2_dncut_x", (DL_FUNC) &_PPCI2_dncut_x, 4},
+    {"_PPCI_f_md_cpp", (DL_FUNC) &_PPCI2_f_md_cpp, 7},
+    {"_PPCI_df_md_cpp", (DL_FUNC) &_PPCI2_df_md_cpp, 7},
+    {"_PPCI_ismin_cpp", (DL_FUNC) &_PPCI2_ismin_cpp, 7},
+    {"_PPCI_md_b_cpp", (DL_FUNC) &_PPCI2_md_b_cpp, 7},
+    {"_PPCI_ncut_x", (DL_FUNC) &_PPCI2_ncut_x, 4},
+    {"_PPCI_dncut_x", (DL_FUNC) &_PPCI2_dncut_x, 4},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_PPCI2(DllInfo *dll) {
+RcppExport void R_init_PPCI(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
