@@ -224,47 +224,7 @@ f_md <- function(v, X, P){
 
   # find density of data projected along v/||v||
 
-  p <- X%*%v/norm_vec(v)
-  n <- length(p)
-
-  # if alpha is zero then hyperplane passes through origin
-
-  if(P$alpha==0){
-    return(sum(1/sqrt(2*pi)*exp(-p^2/2/P$h^2)/n/P$h))
-  }
-
-  # otherwise find the minimum density hyperplane along v within [-alpha*sigma, alpha*sigma]
-
-  s <- sd(p)
-  den <- density(p, bw = P$h, from = -P$alpha*s-1, to = P$alpha*s+1, n = 100)
-  pen <- den$y + P$C*((den$x<(-P$alpha*s))*(-P$alpha*s-den$x)^2 + (den$x>(P$alpha*s))*(den$x-P$alpha*s)^2)
-  mins <- which(apply(rbind(pen[1:98], pen[2:99], pen[3:100]), 2, function(x) x[2]<=min(x)))+1
-  bs <- den$x[mins]
-  fs <- pen[mins]
-
-  # use bisection to refine the location of all local minima
-
-  for(i in 1:length(mins)){
-    hi <- den$x[mins[i]+1]
-    lo <- den$x[mins[i]-1]
-    repeat{
-      mid <- (hi+lo)/2
-      dmid <- dkde(mid, p, P$h, P$alpha, P$C, s)
-      if(abs(dmid)<1e-8 || (hi-mid)<1e-10){
-        bs[i] <- mid
-        fs[i] <- 1/sqrt(2*pi)/n/P$h*sum(exp(-(p-mid)^2/2/P$h^2))
-        if(bs[i]>(P$alpha*s)) fs[i] <- fs[i] + P$C*(bs[i]-P$alpha*s)^2
-        if(bs[i]<(-P$alpha*s)) fs[i] <- fs[i] + P$C*(-bs[i]-P$alpha*s)^2
-        break
-      }
-      else if(dmid<0) lo <- mid
-      else hi <- mid
-    }
-  }
-
-  # return minimum of the minima after refinement
-
-  min(fs)
+  f_md_cpp(v, X, nrow(X), ncol(X), P$h/1.961, P$alpha, P$C)
 }
 
 ### function df_md() evaluates the gradient of the projection index for MDPP. Assumes data have zero mean
@@ -283,57 +243,7 @@ df_md = function(v, X, P){
 
   # first steps are as in evaluation of the projection index, to find the location of the optimum
 
-  p <- X%*%v/norm_vec(v)
-  n <- length(p)
-
-  nv <- norm_vec(v)
-
-  if(P$alpha==0){
-    c(t(1/sqrt(2*pi)/n/P$h^3*(exp(-p^2/2/P$h^2)*(-p)))%*%(X/nv-(X%*%v)%*%t(v)/nv^3))
-  }
-
-  s <- sd(p)
-  den <- density(p, bw = P$h, from = -P$alpha*s-1, to = P$alpha*s+1, n = 100)
-  pen <- den$y + P$C*((den$x<(-P$alpha*s))*(-P$alpha*s-den$x)^2 + (den$x>(P$alpha*s))*(den$x-P$alpha*s)^2)
-  mins <- which(apply(rbind(pen[1:98], pen[2:99], pen[3:100]), 2, function(x) x[2]<=min(x)))+1
-  bs <- den$x[mins]
-  fs <- pen[mins]
-  for(i in 1:length(mins)){
-    hi <- den$x[mins[i]+1]
-    lo <- den$x[mins[i]-1]
-    repeat{
-      mid <- (hi+lo)/2
-      dmid <- dkde(mid, p, P$h, P$alpha, P$C, s)
-      if(abs(dmid)<1e-8 || (hi-mid)<1e-10){
-        bs[i] <- mid
-        fs[i] <- 1/sqrt(2*pi)/n/P$h*sum(exp(-(p-mid)^2/2/P$h^2))
-        if(bs[i]>(P$alpha*s)) fs[i] <- fs[i] + P$C*(bs[i]-P$alpha*s)^2
-        if(bs[i]<(-P$alpha*s)) fs[i] <- fs[i] + P$C*(-bs[i]-P$alpha*s)^2
-        break
-      }
-      else if(dmid<0) lo <- mid
-      else hi <- mid
-    }
-  }
-
-  w <- which.min(fs)
-  b <- bs[w]
-
-  # compute the gradient of the the density on hyperplane H(v, b)
-
-  if(b<(-P$alpha*s)){
-    ds <- 1/nv^2*(P$COV%*%v/s-s*v)
-    dpen <- c(-P$C*2*(-b-P$alpha*s)*P$alpha*ds)
-    c(t(1/sqrt(2*pi)/n/P$h^3*(exp(-(p-b)^2/2/P$h^2)*(b-p)))%*%(X/nv-(X%*%v)%*%t(v)/nv^3)) + dpen
-  }
-  else if(b>(P$alpha*s)){
-    ds <- 1/nv^2*(P$COV%*%v/s-s*v)
-    dpen <- -c(P$C*2*(b-P$alpha*s)*P$alpha*ds)
-    c(t(1/sqrt(2*pi)/n/P$h^3*(exp(-(p-b)^2/2/P$h^2)*(b-p)))%*%(X/nv-(X%*%v)%*%t(v)/nv^3)) + dpen
-  }
-  else{
-    c(t(1/sqrt(2*pi)/n/P$h^3*(exp(-(p-b)^2/2/P$h^2)*(b-p)))%*%(X/nv-(X%*%v)%*%t(v)/nv^3))
-  }
+  df_md_cpp(v, X, nrow(X), ncol(X), P$h/1.961, P$alpha, P$C)
 }
 
 ### function dkde() evaluates the gradient of the (penalised) kernel density estimator of the univariate
@@ -347,12 +257,6 @@ df_md = function(v, X, P){
 # s = standard deviation of xs
 
 ## output is a scalar, the gradient of the projected density at pt
-
-dkde <- function(pt, xs, bw, al, K, s){
-  if(pt<(-al*s)) 1/sqrt(2*pi)/length(xs)/bw^3*sum(exp(-(xs-pt)^2/2/bw^2)*(xs-pt)) - 2*K*(-al*s-pt)
-  else if(pt>(al*s)) 1/sqrt(2*pi)/length(xs)/bw^3*sum(exp(-(xs-pt)^2/2/bw^2)*(xs-pt)) + 2*K*(pt-al*s)
-  else 1/sqrt(2*pi)/length(xs)/bw^3*sum(exp(-(xs-pt)^2/2/bw^2)*(xs-pt))
-}
 
 ### function is_minim() checks if the optimal hyperplane along v is at a local minimum of the density
 ## arguments:
@@ -368,19 +272,7 @@ is_minim <- function(v, X, P){
 
   # compute the projected density along v/||v||
 
-  p <- X%*%v/norm_vec(v)
-  s <- sd(p)
-  d <- density(p, bw = P$h, n = 200)
-
-  # if the minimum lies at one of the boundaries then it is not a local
-  # minimum of the density
-
-  pen <- d$y + P$C*((d$x<(-P$alpha*s))*(-P$alpha*s-d$x)^2 + (d$x>(P$alpha*s))*(d$x-P$alpha*s)^2)
-  
-  modes <- which(apply(rbind(d$y[3:200], d$y[2:199], d$y[1:198]), 2, function(x) x[2]>=max(x))) + 1
-  bix <- which.min(pen)
-
-  (bix > modes[1] && bix < max(modes) && min(sum(p<d$x[bix]), sum(p>d$x[bix]))>P$nmin)
+  ismin_cpp(v, X, nrow(X), ncol(X), P$h/1.961, P$alpha, P$C)==1
 }
 
 
@@ -434,12 +326,8 @@ mdpp <- function(v, X, P, alphamin, alphamax, verb, labels, maxit, ftol){
 ## output is a scalar, the value of b making H(v, b) the minimum density hyperlpane orthogonal to v
 
 md_b <- function(v, X, P){
-  p <- X%*%v/norm_vec(v)
-  n <- length(p)
-  s <- sd(p)
-  den <- density(p, bw = P$h, from = -P$alpha*s, to = P$alpha*s, n = 1000)
-  w <- which.min(den$y)
-  den$x[w[ceiling(length(w)/2)]]
+
+  md_b_cpp(v, X, nrow(X), ncol(X), P$h/1.961, P$alpha, P$C)
 }
 
 ### function mdh() determines the minimum density hyperplane

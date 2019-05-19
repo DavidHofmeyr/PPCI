@@ -314,20 +314,10 @@ ncuth <- function(X, v0 = NULL, s = NULL, minsize = NULL, verb = NULL, labels = 
 
 f_ncut <- function(v, X, P){
 
-  # project the data onto v and sort in increasing order
+  ncut_x(sort(X%*%v/norm_vec(v)), P$s, nrow(X), P$nmin)
 
-  x <- X%*%v/norm_vec(v)/P$s
-  srt <- sort(x)
-  n <- length(x)
+  #min(ncs[P$nmin:(n-P$nmin)])
 
-  # determine the normalised cut at each projected point and return the minimum (see TPAMI paper for details)
-
-  EG <- exp(srt[1]-srt)
-  CSEG <- cumsum(EG)
-  CSiEG <- cumsum(1/EG)
-  Cut <- (CSEG[n]-CSEG[P$nmin:(n-P$nmin)])*CSiEG[P$nmin:(n-P$nmin)]
-  Deg <- ((cumsum(EG*CSiEG) + cumsum((CSEG[n]-CSEG)/EG)))
-  min((Cut*(1/Deg[P$nmin:(n-P$nmin)]+1/(Deg[n]-Deg[P$nmin:(n-P$nmin)]))))
 }
 
 ### function df_ncut evaluates the gradient of the projection index for ncuth, provided the
@@ -344,64 +334,11 @@ f_ncut <- function(v, X, P){
 df_ncut <- function(v, X, P){
 
   # project the data onto v and determine their ordering
-
-  x <- X%*%v/norm_vec(v)/P$s
-  o <- order(x)
-  srt <- x[o]
-  n <- length(x)
-
-  # find the location of the optimal hyperplane orthogonal to v
-
-  EG <- exp(srt[1]-srt)
-  CSEG <- cumsum(EG)
-  CSiEG <- cumsum(1/EG)
-  Cut <- (CSEG[n]-CSEG[P$nmin:(n-P$nmin)])*CSiEG[P$nmin:(n-P$nmin)]
-  Deg <- ((cumsum(EG*CSiEG) + cumsum((CSEG[n]-CSEG)/EG)))
-  w <- which.min((Cut*(1/Deg[P$nmin:(n-P$nmin)]+1/(Deg[n]-Deg[P$nmin:(n-P$nmin)])))) + P$nmin - 1
-
-  # compute the gradient of the normalised cut (see TPAMI paper for details)
-
-  Ek <- exp(srt-srt[w])
-  Eki <- 1/Ek
-  CSEk <- cumsum(Ek)
-  CSEki <- cumsum(Eki)
-  ds <- numeric(n)
-  if(w>2){
-    ds[1] <- (CSEki[n]-CSEki[w])*Ek[1]*(1/Deg[w]+1/(Deg[n]-Deg[w]))-Cut[w-P$nmin+1]*((2*Ek[1]*(CSEki[w]-CSEki[1])+Ek[1]*(CSEki[n]-CSEki[w]))/Deg[w]^2+Ek[1]*(CSEki[n]-CSEki[w])/(Deg[n]-Deg[w])^2)
-    ds[2:(w-1)] <- (CSEki[n]-CSEki[w])*Ek[2:(w-1)]*(1/Deg[w]+1/(Deg[n]-Deg[w]))-Cut[w-P$nmin+1]*((2*Ek[2:(w-1)]*(CSEki[w]-CSEki[2:(w-1)])-2*Eki[2:(w-1)]*CSEk[1:(w-2)]+Ek[2:(w-1)]*(CSEki[n]-CSEki[w]))/Deg[w]^2+Ek[2:(w-1)]*(CSEki[n]-CSEki[w])/(Deg[n]-Deg[w])^2)
-    ds[w] <- (CSEki[n]-CSEki[w])*(1/Deg[w]+1/(Deg[n]-Deg[w]))-Cut[w-P$nmin+1]*((CSEki[n]-CSEki[w]-2*CSEk[w-1])/Deg[w]^2+(CSEki[n]-CSEki[w])/(Deg[n]-Deg[w])^2)
-    ds[(w+1):n] <- -CSEk[w]*Eki[(w+1):n]*(1/Deg[w]+1/(Deg[n]-Deg[w]))-Cut[w-P$nmin+1]*(-Eki[(w+1):n]*CSEk[w]/Deg[w]^2+(2*Ek[(w+1):n]*(CSEki[n]-CSEki[(w+1):n])-2*Eki[(w+1):n]*(CSEk[w:(n-1)]-CSEk[w])-Eki[(w+1):n]*CSEk[w])/(Deg[n]-Deg[w])^2)
-  }
-  else{
-    ds <- sapply(1:n, function(l){
-      if(l==1){
-        d1 <- (CSEki[n]-CSEki[w])*Ek[l]
-        d2 <- 2*Ek[l]*(CSEki[w]-CSEki[l])+Ek[l]*(CSEki[n]-CSEki[w])
-        d3 <- Ek[l]*(CSEki[n]-CSEki[w])
-        d1*(1/Deg[w]+1/(Deg[n]-Deg[w]))-Cut[w-P$nmin+1]*(d2/Deg[w]^2+d3/(Deg[n]-Deg[w])^2)
-      }
-      else if(l<w){
-        d1 <- (CSEki[n]-CSEki[w])*Ek[l]
-        d2 <- 2*Ek[l]*(CSEki[w]-CSEki[l])-2*Eki[l]*CSEk[l-1]+Ek[l]*(CSEki[n]-CSEki[w])
-        d3 <- Ek[l]*(CSEki[n]-CSEki[w])
-        d1*(1/Deg[w]+1/(Deg[n]-Deg[w]))-Cut[w-P$nmin+1]*(d2/Deg[w]^2+d3/(Deg[n]-Deg[w])^2)
-      }
-      else if(l>w){
-        d1 <- -CSEk[w]*Eki[l]
-        d2 <- -Eki[l]*CSEk[w]
-        d3 <- 2*Ek[l]*(CSEki[n]-CSEki[l])-2*Eki[l]*(CSEk[l-1]-CSEk[w])-Eki[l]*CSEk[w]
-        d1*(1/Deg[w]+1/(Deg[n]-Deg[w]))-Cut[w-P$nmin+1]*(d2/Deg[w]^2+d3/(Deg[n]-Deg[w])^2)
-      }
-      else{
-        d1 <- CSEki[n]-CSEki[w]
-        d2 <- CSEki[n]-CSEki[w]-2*CSEk[w-1]
-        d3 <- CSEki[n] - CSEki[w]
-        d1*(1/Deg[w]+1/(Deg[n]-Deg[w]))-Cut[w-P$nmin+1]*(d2/Deg[w]^2+d3/(Deg[n]-Deg[w])^2)
-      }
-    })
-  }
   nv <- norm_vec(v)
-  dv <- (X[o,]/nv-((X[o,])%*%v)%*%t(v)/nv^3)/P$s
+  x <- X%*%v/nv
+  o <- order(x)
+  dv <- (X[o,]/nv-((X[o,])%*%v)%*%t(v)/nv^3)
+  ds <- dncut_x(x[o], P$s, length(x), P$nmin)
   ds%*%dv
 }
 
