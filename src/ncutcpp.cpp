@@ -51,7 +51,7 @@ NumericVector dncut_x(NumericVector x, double h, int n, int kmin){ // x must be 
     r[n-i-1] = exp((x[n-i-1]-x[n-i])/h)*r[n-i]+1.0;
   }
   int k=kmin;
-  double optval = 1.0;
+  double optval = 10.0;
   NumericVector cut(n);
   NumericVector vol(n);
   cut[0] = l[0]*r[0]/h;
