@@ -426,7 +426,7 @@ mdh <- function(X, v0 = NULL, minsize = NULL, bandwidth = NULL, alphamin = NULL,
   else if(is.function(bandwidth)) params$h <- bandwidth(X)
   else stop('bandwidth must be numeric or a function of the data being split')
 
-  params$C <- 100*exp(-0.5)/sqrt(2*pi)/params$h^2
+  params$C <- 50*exp(-0.5)/sqrt(2*pi)/params$h^2
 
   if(is.null(v0)){
     if(ncol(X)>2) E <- matrix(rARPACK::eigs_sym(params$COV, 1)$vectors, ncol = 1)
