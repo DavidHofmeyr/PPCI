@@ -186,7 +186,7 @@ mddc <- function(X, K, minsize = NULL, split.index = NULL, v0 = NULL, bandwidth 
   # create cluster assignment vector for the complete hierarchy
 
   asgn <- numeric(n)+1
-  for(i in 1:(K-1)) asgn[ixs[[2*i]]] <- i+1
+  if(K>1) for(i in 1:(K-1)) asgn[ixs[[2*i]]] <- i+1
 
   # determine actual locations of the nodes (not their would-be location within a complete tree)
 
