@@ -39,8 +39,8 @@ double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
   double denom = 4.0*n*pow(h, 3);
   for(int i=0; i<n; i++){
     for(int j=0; j<=1; j++) df[i] -= (pow(op[i], 1-j)*L(j,i)-pow(-op[i],1-j)*R(j,i))/denom;
-    if(op[i]<(-al*sd)) df[i] -= 2*C*(-al*sd-op[i]);
-    if(op[i]>(al*sd)) df[i] += 2*C*(op[i]-al*sd);
+    if(op[i]<(-al*sd)) df[i] -= 2.0*C*(-al*sd-op[i]);
+    if(op[i]>(al*sd)) df[i] += 2.0*C*(op[i]-al*sd);
   }
   double f_at_min, df_at_min;
   double miny = 100000;
@@ -61,8 +61,8 @@ double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
         mid = 0.5*lo+0.5*hi;
         exp_mult = exp((op[pos]-mid)/h);
         for(int j=0; j<=1; j++) df_at_min -= (pow(mid,1-j)*exp_mult*L(j,pos)-pow(-mid,1-j)/exp_mult*R(j,pos))/denom;
-        if(mid<(-al*sd)) df_at_min -= 2*C*(-al*sd-mid);
-        if(mid>(al*sd)) df_at_min += 2*C*(mid-al*sd);
+        if(mid<(-al*sd)) df_at_min -= 2.0*C*(-al*sd-mid);
+        if(mid>(al*sd)) df_at_min += 2.0*C*(mid-al*sd);
         if(df_at_min<(-eps)) lo = mid;
         if(df_at_min>eps) hi = mid;
       }
@@ -113,8 +113,8 @@ arma::vec df_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al,
   double denom = 4.0*n*pow(h, 3);
   for(int i=0; i<n; i++){
     for(int j=0; j<=1; j++) df[i] -= (pow(op[i], 1-j)*L(j,i)-pow(-op[i],1-j)*R(j,i))/denom;
-    if(op[i]<(-al*sd)) df[i] -= 2*C*(-al*sd-op[i]);
-    if(op[i]>(al*sd)) df[i] += 2*C*(op[i]-al*sd);
+    if(op[i]<(-al*sd)) df[i] -= 2.0*C*(-al*sd-op[i]);
+    if(op[i]>(al*sd)) df[i] += 2.0*C*(op[i]-al*sd);
   }
   double f_at_min, df_at_min;
   double miny = 100000;
@@ -135,8 +135,8 @@ arma::vec df_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al,
         mid = 0.5*lo+0.5*hi;
         exp_mult = exp((op[pos]-mid)/h);
         for(int j=0; j<=1; j++) df_at_min -= (pow(mid,1-j)*exp_mult*L(j,pos)-pow(-mid,1-j)/exp_mult*R(j,pos))/denom;
-        if(mid<(-al*sd)) df_at_min -= 2*C*(-al*sd-mid);
-        if(mid>(al*sd)) df_at_min += 2*C*(mid-al*sd);
+        if(mid<(-al*sd)) df_at_min -= 2.0*C*(-al*sd-mid);
+        if(mid>(al*sd)) df_at_min += 2.0*C*(mid-al*sd);
         if(df_at_min<(-eps)) lo = mid;
         if(df_at_min>eps) hi = mid;
       }
