@@ -114,7 +114,7 @@ mddc <- function(X, K, minsize = NULL, split.index = NULL, v0 = NULL, bandwidth 
 
   # repeat binary partitions until the desired number of clusters have been generated
 
-  while(length(ixs)<(2*K-1) && max(split_indices) > -Inf){
+  while((length(ixs)<(2*K-1)) && (max(split_indices) > -Inf)){
     id <- which.max(split_indices)
 
     split_indices[id] <- -Inf
