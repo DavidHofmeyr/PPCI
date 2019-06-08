@@ -174,8 +174,8 @@ mddc <- function(X, K, minsize = NULL, split.index = NULL, v0 = NULL, bandwidth 
   if(length(ixs)<(2*K-1)){
     K <- (length(ixs)+1)/2
     split_indices <- split_indices[1:length(ixs)]
-    tree <- tree[1:length(ixs),]
-    vs <- vs[1:length(ixs),]
+    tree <- matrix(tree[1:length(ixs),], ncol = 2)
+    vs <- matrix(vs[1:length(ixs),], ncol = d)
     bs <- bs[1:length(ixs)]
     dens <- dens[1:length(ixs)]
     rel.deps <- rel.deps[1:length(ixs)]
