@@ -9,7 +9,8 @@ using namespace Rcpp;
 double ncut_x(NumericVector x, double h, int n, int kmin){ // x must be sorted in increasing order
   NumericVector l(n);
   NumericVector r(n);
-  l[0] = 1.0;// = r[n-1] = 1.0;
+  l[0] = 1.0;
+  r[n-1] = 0.0;
   for(int i=1; i<n; i++){
     l[i] = 1.0 + exp((x[i-1]-x[i])/h)*l[i-1];
     r[n-i-1] = exp((x[n-i-1]-x[n-i])/h)*(r[n-i]+1.0);
@@ -45,7 +46,8 @@ double ncut_x(NumericVector x, double h, int n, int kmin){ // x must be sorted i
 NumericVector dncut_x(NumericVector x, double h, int n, int kmin){ // x must be sorted in increasing order
   NumericVector l(n);
   NumericVector r(n);
-  l[0] = 1.0;// = r[n-1] = 1.0;
+  l[0] = 1.0;
+  r[n-1] = 0.0;
   for(int i=1; i<n; i++){
     l[i] = 1 + exp((x[i-1]-x[i])/h)*l[i-1];
     r[n-i-1] = exp((x[n-i-1]-x[n-i])/h)*(r[n-i]+1.0);
