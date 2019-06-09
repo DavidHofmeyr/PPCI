@@ -5,8 +5,10 @@ using namespace Rcpp;
 
 
 double d_abs(double x){
-  if(x>0) return x;
-  else return -x;
+  double ret;
+  if(x>0) ret = x;
+  else ret = -x;
+  return ret;
 }
 
 // [[Rcpp::export]]
@@ -18,8 +20,8 @@ double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
   arma::vec v_(d);
   for(int i=0; i<d; i++) v_[i] = v[i]/nv;
   arma::vec p = X*v_;
-  double miny;
-  if(al>0.000000001){
+  double miny = 0.0;
+  if(al>0.00001){
     double var = 0;
     for(int i=0; i<n; i++) var += p[i]*p[i];
     var/=(n-1.0);
@@ -49,7 +51,7 @@ double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
     double minx = 0;
     int pos = 0;
     double lo, hi, mid;
-    double eps = pow(0.1, 7);
+    double eps = pow(0.1, 8);
     double exp_mult;
     while(pos<(n-1)){
       if(df[pos]<0 && df[pos+1]>0){
@@ -105,7 +107,7 @@ arma::vec df_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al,
   double sd = pow(var, .5);
   double minx = 0;
   double denom;
-  if(al > 0.000000001){
+  if(al > 0.00001){
     NumericVector op(n);
     for(int i=0; i<n; i++) op[i] = p[i];
     std::sort(op.begin(),op.end());
@@ -130,7 +132,7 @@ arma::vec df_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al,
     double miny = 100000;
     int pos = 0;
     double lo, hi, mid;
-    double eps = pow(0.1, 7);
+    double eps = pow(0.1, 8);
     double exp_mult;
     while(pos<(n-1)){
       if(df[pos]<0 && df[pos+1]>0){
@@ -240,14 +242,14 @@ int ismin_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, doubl
   double modef = 0;
   int mode1_found = 0;
   while(pos<(n-1)){
-    if(df2[pos]>0 && df2[pos+1]<0){
+    if(df2[pos]>=0 && df2[pos+1]<=0){
       if(mode1_found==0){
         mode1_found = 1;
         mode1 = op[pos];
       }
       modef = op[pos];
     }
-    if(df[pos]<0 && df[pos+1]>0){
+    if(df[pos]<=0 && df[pos+1]>=0){
       denom = 4.0*n*pow(h, 3);
       f_at_min = 0.0;
       df_at_min = 1.0;
