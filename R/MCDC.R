@@ -403,7 +403,7 @@ mch <- function(X, v0 = NULL, minsize = NULL, verb = NULL, labels = NULL, maxit 
 
   output <- hyperplanes[[best_sol]]
 
-  output$alternatives <- output[-best_sol]
+  output$alternatives <- hyperplanes[-best_sol]
 
   output
 }
