@@ -19,7 +19,7 @@ double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
   for(int i=0; i<d; i++) v_[i] = v[i]/nv;
   arma::vec p = X*v_;
   double miny;
-  if(al>0){
+  if(al>0.000000001){
     double var = 0;
     for(int i=0; i<n; i++) var += p[i]*p[i];
     var/=(n-1.0);
@@ -104,7 +104,8 @@ arma::vec df_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al,
   var/=(n-1.0);
   double sd = pow(var, .5);
   double minx = 0;
-  if(al > 0){
+  double denom;
+  if(al > 0.000000001){
     NumericVector op(n);
     for(int i=0; i<n; i++) op[i] = p[i];
     std::sort(op.begin(),op.end());
@@ -119,7 +120,7 @@ arma::vec df_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al,
       }
     }
     NumericVector df(n);
-    double denom = 4.0*n*pow(h, 3);
+    denom = 4.0*n*pow(h, 3);
     for(int i=0; i<n; i++){
       for(int j=0; j<=1; j++) df[i] -= (pow(op[i], 1-j)*L(j,i)-pow(-op[i],1-j)*R(j,i))/denom;
       if(op[i]<(-al*sd)) df[i] -= 2.0*C*(-al*sd-op[i]);
