@@ -84,8 +84,8 @@ double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
     }
   }
   else{
-    double const = 1.0/n/h/4.0;
-    for(int i=0; i<n; i++) miny += exp(-d_abs(p[i])/h)*(1.0 + d_abs(p_i)/h)*const;
+    double constnt = 1.0/n/h/4.0;
+    for(int i=0; i<n; i++) miny += exp(-d_abs(p[i])/h)*(1.0 + d_abs(p[i])/h)*constnt;
   }
   return(miny);
 }
