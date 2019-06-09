@@ -12,7 +12,7 @@ double ncut_x(NumericVector x, double h, int n, int kmin){ // x must be sorted i
   l[0] = 1.0;// = r[n-1] = 1.0;
   for(int i=1; i<n; i++){
     l[i] = 1.0 + exp((x[i-1]-x[i])/h)*l[i-1];
-    r[n-i-1] = exp((x[n-i-1]-x[n-i])/h)*r[n-i]+1.0;
+    r[n-i-1] = exp((x[n-i-1]-x[n-i])/h)*(r[n-i]+1.0);
   }
   NumericVector cut(n);
   NumericVector vol(n);
@@ -48,7 +48,7 @@ NumericVector dncut_x(NumericVector x, double h, int n, int kmin){ // x must be 
   l[0] = 1.0;// = r[n-1] = 1.0;
   for(int i=1; i<n; i++){
     l[i] = 1 + exp((x[i-1]-x[i])/h)*l[i-1];
-    r[n-i-1] = exp((x[n-i-1]-x[n-i])/h)*r[n-i]+1.0;
+    r[n-i-1] = exp((x[n-i-1]-x[n-i])/h)*(r[n-i]+1.0);
   }
   int k=kmin;
   double optval = 10.0;
