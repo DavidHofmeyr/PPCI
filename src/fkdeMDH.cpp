@@ -48,7 +48,6 @@ double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
     }
     double f_at_min, df_at_min;
     miny = 100000;
-    double minx;
     int pos = 0;
     double lo, hi, mid;
     double eps = pow(0.1, 8);
@@ -80,7 +79,6 @@ double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
         if(mid>(al*sd)) f_at_min += C*pow(mid-al*sd,2);
         if(f_at_min < miny){
           miny = f_at_min;
-          minx = mid;
         }
       }
       pos += 1;
