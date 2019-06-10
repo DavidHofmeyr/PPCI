@@ -83,7 +83,7 @@ node_plot <- function(sol, node, labels = NULL, transparency = NULL){
 
   is.leaf = 1-sum((sol$model[,1]==(sol$model[node,1]+1))*(sol$model[,2]==(2*sol$model[node,2])))
 
-  if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X[sol$Nodes[[node]]$ixs,]-X[sol$Nodes[[node]]$ixs,]%*%sol$Nodes[[node]]$v%*%t(sol$Nodes[[node]]$v)), 1)$vectors[,1]
+  if(ncol(X)>2) v2 <- eigs_sym(cov(X[sol$Nodes[[node]]$ixs,]-X[sol$Nodes[[node]]$ixs,]%*%sol$Nodes[[node]]$v%*%t(sol$Nodes[[node]]$v)), 1)$vectors[,1]
   else v2 <- eigen(cov(X[sol$Nodes[[node]]$ixs,]-X[sol$Nodes[[node]]$ixs,]%*%sol$Nodes[[node]]$v%*%t(sol$Nodes[[node]]$v)))$vectors[,1]
 
   Xp <- X[sol$Nodes[[node]]$ixs,]%*%cbind(sol$Nodes[[node]]$v, v2)

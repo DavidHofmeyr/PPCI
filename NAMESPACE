@@ -1,7 +1,7 @@
 useDynLib(PPCI, .registration=TRUE)
 exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp, evalCpp)
-importFrom(rARPACK, eigs_sym)
+importFrom("rARPACK", "eigs_sym")
 importFrom("grDevices", "dev.off", "pdf", "rgb", "col2rgb")
 importFrom("utils", "data")
 importFrom("graphics", "abline", "axis", "layout", "lines", "par", "plot", "points", "segments", "text", "title", "image", "pairs")

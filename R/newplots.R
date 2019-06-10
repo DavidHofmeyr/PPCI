@@ -104,7 +104,7 @@ tree_plot <- function(sol, labels = NULL, node.numbers = NULL, transparency = NU
 add_subtree <- function(sol, X, node, L, U, y, h, w, labels, node.numbers, transparency){
   is.leaf <- 1-sum((sol$model[,1]==(sol$model[node,1]+1))*(sol$model[,2]==sol$model[node,2]*2))
   if(is.leaf){
-    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X[sol$Nodes[[node]]$ixs,]-X[sol$Nodes[[node]]$ixs,]%*%sol$Nodes[[node]]$v%*%t(sol$Nodes[[node]]$v)), 1)$vectors[,1]
+    if(ncol(X)>2) v2 <- eigs_sym(cov(X[sol$Nodes[[node]]$ixs,]-X[sol$Nodes[[node]]$ixs,]%*%sol$Nodes[[node]]$v%*%t(sol$Nodes[[node]]$v)), 1)$vectors[,1]
     else v2 <- eigen(cov(X[sol$Nodes[[node]]$ixs,]-X[sol$Nodes[[node]]$ixs,]%*%sol$Nodes[[node]]$v%*%t(sol$Nodes[[node]]$v)))$vectors[,1]
     Xp <- X[sol$Nodes[[node]]$ixs,]%*%cbind(sol$Nodes[[node]]$v, v2)
     Xp[,1] <- w*.7*(Xp[,1]-min(Xp[,1]))/(max(Xp[,1])-min(Xp[,1])) + (L+U-w*.7)/2
@@ -130,7 +130,7 @@ add_subtree <- function(sol, X, node, L, U, y, h, w, labels, node.numbers, trans
     if(node.numbers) text((L+U-w*.8)/2, y-h*.9, as.character(node), cex = .7)
   }
   else{
-    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X[sol$Nodes[[node]]$ixs,]-X[sol$Nodes[[node]]$ixs,]%*%sol$Nodes[[node]]$v%*%t(sol$Nodes[[node]]$v)), 1)$vectors[,1]
+    if(ncol(X)>2) v2 <- eigs_sym(cov(X[sol$Nodes[[node]]$ixs,]-X[sol$Nodes[[node]]$ixs,]%*%sol$Nodes[[node]]$v%*%t(sol$Nodes[[node]]$v)), 1)$vectors[,1]
     else v2 <- eigen(cov(X[sol$Nodes[[node]]$ixs,]-X[sol$Nodes[[node]]$ixs,]%*%sol$Nodes[[node]]$v%*%t(sol$Nodes[[node]]$v)))$vectors[,1]
     Xp <- X[sol$Nodes[[node]]$ixs,]%*%cbind(sol$Nodes[[node]]$v, v2)
     Xp[,1] <- w*(Xp[,1]-min(Xp[,1]))/(max(Xp[,1])-min(Xp[,1])) + (L+U-w)/2

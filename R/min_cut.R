@@ -257,7 +257,7 @@ ncuth <- function(X, v0 = NULL, s = NULL, minsize = NULL, verb = NULL, labels = 
   if(is.null(ftol)) ftol <- 1e-8
 
   if(is.null(s)){
-    if(ncol(X)>2) params$s <- rARPACK::eigs_sym(cov(X), 1)$values[1]^.5*100/nrow(X)^.2
+    if(ncol(X)>2) params$s <- eigs_sym(cov(X), 1)$values[1]^.5*100/nrow(X)^.2
     else params$s <- eigen(cov(X))$values[1]^.5*100/nrow(X)^.2
   }
   else if(is.numeric(s)) params$s <- s
@@ -265,7 +265,7 @@ ncuth <- function(X, v0 = NULL, s = NULL, minsize = NULL, verb = NULL, labels = 
   else stop('s must be numeric or a function of the data being split')
 
   if(is.null(v0)){
-    if(ncol(X)>2) E <- matrix(rARPACK::eigs_sym(cov(X), 1)$vectors, ncol = 1)
+    if(ncol(X)>2) E <- matrix(eigs_sym(cov(X), 1)$vectors, ncol = 1)
     else E <- matrix(eigen(cov(X))$vectors[,1], ncol = 1)
   }
   else if (is.function(v0)) E <- cbind(c(), v0(X))
@@ -285,7 +285,7 @@ ncuth <- function(X, v0 = NULL, s = NULL, minsize = NULL, verb = NULL, labels = 
 
     pass <- X%*%v<b
 
-    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X-X%*%v%*%t(v)), 1)$vectors
+    if(ncol(X)>2) v2 <- eigs_sym(cov(X-X%*%v%*%t(v)), 1)$vectors
     else v2 <- eigen(cov(X-X%*%v%*%t(v)))$vectors[,1]
     hyperplanes[[i]] <- list(cluster = pass+1, v = v, b = b, params = params, fval = fval, method = 'NCutH', data = X, fitted = X%*%cbind(v, v2))
 

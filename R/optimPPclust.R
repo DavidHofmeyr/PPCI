@@ -32,7 +32,7 @@ ppclust.optim <- function(v0, f, df, X, params, getb, verbosity, labels, method,
       dir.create(dirname)
       count <- 0
     }
-    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X), 2)$vectors[,2]
+    if(ncol(X)>2) v2 <- eigs_sym(cov(X), 2)$vectors[,2]
     else v2 <- eigen(cov(X))$vectors[,2]
     v0 <- list(par = v0)
     for(i in 1:30){

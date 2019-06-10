@@ -419,7 +419,7 @@ mdh <- function(X, v0 = NULL, minsize = NULL, bandwidth = NULL, alphamin = NULL,
   params$COV <- cov(X)
 
   if(is.null(bandwidth)){
-    if(ncol(X)>2) params$h <- 0.9*rARPACK::eigs_sym(params$COV, 1)$values[1]^.5/n^0.2
+    if(ncol(X)>2) params$h <- 0.9*eigs_sym(params$COV, 1)$values[1]^.5/n^0.2
     else params$h <- 0.9*eigen(params$COV)$values[1]^.5/n^0.2
   }
   else if(is.numeric(bandwidth)) params$h <- bandwidth
@@ -429,7 +429,7 @@ mdh <- function(X, v0 = NULL, minsize = NULL, bandwidth = NULL, alphamin = NULL,
   params$C <- 100*exp(-0.5)/sqrt(2*pi)/params$h^2
 
   if(is.null(v0)){
-    if(ncol(X)>2) E <- matrix(rARPACK::eigs_sym(params$COV, 1)$vectors, ncol = 1)
+    if(ncol(X)>2) E <- matrix(eigs_sym(params$COV, 1)$vectors, ncol = 1)
     else E <- matrix(eigen(params$COV)$vectors[,1], ncol = 1)
   }
   else if(is.function(v0)) E <- v0(X)
@@ -461,7 +461,7 @@ mdh <- function(X, v0 = NULL, minsize = NULL, bandwidth = NULL, alphamin = NULL,
       depth <- 0
     }
 
-    if(ncol(X)>2) v2 <- rARPACK::eigs_sym(cov(X-X%*%v%*%t(v)), 1)$vectors
+    if(ncol(X)>2) v2 <- eigs_sym(cov(X-X%*%v%*%t(v)), 1)$vectors
     else v2 <- eigen(cov(X-X%*%v%*%t(v)))$vectors[,1]
 
     hyperplanes[[i]] <- list(cluster = pass+1, v = v, b = b + (mns%*%v)[1], rel.dep = depth, fval = fval, params = params, method = 'MDH', data = t(t(X)+mns), fitted = t(t(X)+mns)%*%cbind(v, v2))
