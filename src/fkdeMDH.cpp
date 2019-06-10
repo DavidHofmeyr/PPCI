@@ -48,7 +48,7 @@ double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
     }
     double f_at_min, df_at_min;
     miny = 100000;
-    double minx = 0;
+    double minx;
     int pos = 0;
     double lo, hi, mid;
     double eps = pow(0.1, 8);
@@ -60,6 +60,7 @@ double f_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
         df_at_min = 1.0;
         lo = op[pos];
         hi = op[pos+1];
+        mid = 0.5*lo+0.5*hi;
         while((hi-lo)>eps && d_abs(df_at_min)>eps){
           df_at_min = 0.0;
           mid = 0.5*lo+0.5*hi;
@@ -139,6 +140,7 @@ arma::vec df_md_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al,
         denom = 4.0*n*pow(h, 3);
         lo = op[pos];
         hi = op[pos+1];
+        mid = 0.5*lo+0.5*hi;
         df_at_min = 1.0;
         f_at_min = 0;
         while((hi-lo)>eps && d_abs(df_at_min)>eps){
@@ -255,6 +257,7 @@ int ismin_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, doubl
       df_at_min = 1.0;
       lo = op[pos];
       hi = op[pos+1];
+      mid = 0.5*lo+0.5*hi;
       while((hi-lo)>eps && d_abs(df_at_min)>eps){
         df_at_min = 0.0;
         mid = 0.5*lo+0.5*hi;
@@ -331,6 +334,7 @@ double md_b_cpp(arma::vec v, arma::mat X, int n, int d, double h, double al, dou
       df_at_min = 1.0;
       lo = op[pos];
       hi = op[pos+1];
+      mid = 0.5*lo+0.5*hi;
       while((hi-lo)>eps && d_abs(df_at_min)>eps){
         df_at_min = 0.0;
         mid = 0.5*lo+0.5*hi;
