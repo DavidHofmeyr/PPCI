@@ -1,0 +1,21 @@
+year <- sub("-.*", "", meta$Date)
+
+note <- sprintf("R package version %s", meta$Version)
+
+
+citHeader("The following are references to the package.  You should also reference the individual methods used, as detailed in the reference section of the help files for each function.")
+
+bibentry(bibtype="article",
+         title        = "{PPCI}: an {R} Package for Cluster Identification using
+          Projection Pursuit",
+         author       = c(person(c("David", "P."), "Hofmeyr"),person(c("Nicos", "G."), "Pavlidis")),
+         journal      = "{The R Journal}",
+         year         = "2019",
+         doi          = "10.32614/RJ-2019-046",
+         url          = "https://journal.r-project.org/archive/2019/RJ-2019-046/index.html"
+)
+
+
+
+
+citFooter('To get Bibtex entries use: x<-citation("PPCI"); toBibtex(x)')
